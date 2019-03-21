@@ -17,7 +17,8 @@ public class ProductQueries {
     private Connection connection; // manages the connection
     private PreparedStatement selectAllProducts;
     private PreparedStatement selectAlreadyPurchasedProducts;
-    
+    private PreparedStatement getallproductsbyname;
+
     // Constructor
     public ProductQueries() {
         try {
@@ -25,7 +26,8 @@ public class ProductQueries {
             
             // creates the query for all the records in Product table
             selectAllProducts = connection.prepareStatement("SELECT * FROM products");
-                        
+            // creates the query for all the records in Product table
+            getallproductsbyname = connection.prepareStatement("SELECT * FROM products WHERE  title LIKE ?");
             // creates the query for all purchased products
             selectAlreadyPurchasedProducts = connection.prepareStatement("SELECT ProductID FROM orders WHERE CustomerID = ?");
             
@@ -104,7 +106,25 @@ public class ProductQueries {
         
         return results;
     }
-    
+
+    public ResultSet getAllproduct(String products) {
+
+        ResultSet resultSet = null;
+
+        try {
+            getallproductsbyname.setString(1, products);
+
+            // executeQuery returns a ResultSet with all the desired records
+            resultSet = getallproductsbyname.executeQuery();
+
+
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+
+        }
+
+        return resultSet;
+    }
     // closes the connection with the database
     public void close() {
         try {
